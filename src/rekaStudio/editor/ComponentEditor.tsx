@@ -1,0 +1,254 @@
+import { Frame } from '@rekajs/core';
+import * as t from '@rekajs/types';
+import { makeObservable, action, observable, runInAction } from 'mobx';
+
+import { CommentExtension } from '@app/extensions/CommentExtension';
+import {
+  UserFrame,
+  UserFrameExtension,
+} from '@app/extensions/UserFrameExtension';
+
+import { Editor } from './Editor';
+import { readUserFrames } from './userFrames';
+
+export type ActiveFrame = {
+  state: Frame;
+  user: UserFrame;
+  tplElements: Map<t.Template, Set<HTMLElement>>;
+  templateToShowComments: t.Template | null;
+};
+
+type TplEvent = {
+  selected: t.Template | null;
+  hovered: t.Template | null;
+};
+
+export class ComponentEditor {
+  activeFrame: ActiveFrame | null;
+  frameToIframe: WeakMap<Frame, HTMLIFrameElement>;
+  tplEvent: TplEvent;
+
+  private disposeActiveFrameRemoval: () => void;
+
+  constructor(readonly component: t.Component, readonly editor: Editor) {
+    this.activeFrame = null;
+    this.frameToIframe = new WeakMap();
+    this.tplEvent = {
+      selected: null,
+      hovered: null,
+    };
+
+    makeObservable(this, {
+      tplEvent: observable,
+      setTplEvent: action,
+      setActiveFrame: action,
+      activeFrame: observable,
+      frameToIframe: observable,
+      showComments: action,
+      hideComments: action,
+      connectTplDOM: action,
+    });
+
+    const userFrameExtension =
+      this.editor.reka.getExtension(UserFrameExtension);
+
+    this.disposeActiveFrameRemoval = userFrameExtension.subscribe(
+      (state) => ({
+        framesCount: Array.isArray(state?.frames) ? state.frames.length : 0,
+      }),
+      (collected, prevCollected) => {
+        if (
+          prevCollected &&
+          collected.framesCount >= prevCollected.framesCount
+        ) {
+          return;
+        }
+
+        if (!this.activeFrame?.user) {
+          return;
+        }
+
+        // Check if current active frame has been deleted
+        const isActiveFrameDeleted = !readUserFrames(this.editor.reka).find(
+          (frame) => frame.id === this.activeFrame?.user.id
+        );
+
+        if (!isActiveFrameDeleted) {
+          return;
+        }
+
+        this.setActiveFrame(null);
+      }
+    );
+
+    this.setInitialActiveFrame();
+  }
+
+  setInitialActiveFrame() {
+    const firstUserFrame = readUserFrames(this.editor.reka).filter(
+      (frame) => frame.name === this.component.name
+    )[0];
+
+    if (!firstUserFrame) {
+      return;
+    }
+
+    this.setActiveFrame(firstUserFrame.id);
+  }
+
+  dispose() {
+    this.disposeActiveFrameRemoval();
+  }
+
+  setActiveFrame(frameId: string | null) {
+    if (!frameId) {
+      this.activeFrame = null;
+      return;
+    }
+
+    const userFrame = readUserFrames(this.editor.reka).find(
+      (frame) => frame.id === frameId
+    );
+
+    if (!userFrame) {
+      return;
+    }
+
+    let stateFrame =
+      this.editor.reka.frames.find((frame) => frame.id === frameId) || null;
+
+    if (!stateFrame) {
+      try {
+        stateFrame = this.editor.reka.createFrame({
+          id: userFrame.id,
+          component: {
+            name: userFrame.name,
+            props: userFrame.props,
+          },
+          syncImmediately: true,
+        });
+      } catch {
+        stateFrame =
+          this.editor.reka.frames.find((frame) => frame.id === frameId) || null;
+      }
+    }
+
+    if (!stateFrame) {
+      this.activeFrame = null;
+      return;
+    }
+
+    this.activeFrame = {
+      state: stateFrame,
+      user: userFrame,
+      tplElements: new Map(),
+      templateToShowComments: null,
+    };
+  }
+
+  setTplEvent(event: 'selected' | 'hovered', tpl: t.Template | null) {
+    this.tplEvent[event] = tpl;
+  }
+
+  connectTplDOM(
+    dom: HTMLElement,
+    tpl: t.Template,
+    addListeners: boolean = false
+  ) {
+    const activeFrame = this.activeFrame;
+
+    if (!activeFrame) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      return () => {};
+    }
+
+    let set = activeFrame.tplElements.get(tpl);
+
+    if (!set) {
+      activeFrame.tplElements.set(tpl, new Set());
+
+      /* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */
+      set = activeFrame.tplElements.get(tpl)!;
+    }
+
+    set.add(dom);
+
+    const mouseoverListener = (e: MouseEvent) => {
+      e.stopPropagation();
+      this.setTplEvent('hovered', tpl);
+    };
+
+    const mousedownListener = (e: MouseEvent) => {
+      e.stopPropagation();
+      this.setTplEvent('selected', tpl);
+    };
+
+    const clickListener = (e: MouseEvent) => {
+      e.stopPropagation();
+      this.setTplEvent('selected', tpl);
+    };
+
+    const mouseoutListener = (e: MouseEvent) => {
+      e.stopPropagation();
+      if (this.tplEvent.hovered?.id !== tpl.id) {
+        return;
+      }
+
+      this.setTplEvent('hovered', null);
+    };
+
+    if (addListeners) {
+      dom.addEventListener('mouseover', mouseoverListener);
+      dom.addEventListener('mousedown', mousedownListener);
+      dom.addEventListener('click', clickListener);
+      dom.addEventListener('mouseout', mouseoutListener);
+    }
+
+    return () => {
+      runInAction(() => {
+        dom.removeEventListener('mouseover', mouseoverListener);
+        dom.removeEventListener('mousedown', mousedownListener);
+        dom.removeEventListener('click', clickListener);
+        dom.removeEventListener('mouseout', mouseoutListener);
+
+        const set = activeFrame.tplElements.get(tpl);
+
+        if (!set) {
+          return;
+        }
+
+        set.delete(dom);
+
+        if (set.size > 0) {
+          return;
+        }
+
+        this.activeFrame?.tplElements.delete(tpl);
+      });
+    };
+  }
+
+  showComments(tpl: t.Template) {
+    if (!this.activeFrame) {
+      return;
+    }
+
+    this.activeFrame.templateToShowComments = tpl;
+  }
+
+  hideComments() {
+    if (!this.activeFrame) {
+      return;
+    }
+
+    this.activeFrame.templateToShowComments = null;
+  }
+
+  getCommentCount(tpl: t.Template) {
+    return (
+      this.editor.reka.getExtension(CommentExtension).state.templateToComments[
+        tpl.id
+      ]?.length ?? 0
+    );
+  }
+}

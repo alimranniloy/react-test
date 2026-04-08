@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>site-admin-react</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var root = document.getElementById("root");
+        if (root) {
+          root.innerHTML =
+            '<div style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \\"Liberation Mono\\", \\"Courier New\\", monospace; padding: 16px; color: #334155;">Loading app...</div>';
+        }
+        function show(msg) {
+          try {
+            var el = document.getElementById("__boot_error");
+            if (!el) {
+              el = document.createElement("pre");
+              el.id = "__boot_error";
+              el.style.cssText =
+                "white-space:pre-wrap; padding:16px; margin:0; color:#b91c1c; background:#fff1f2; border-top:1px solid #fecdd3;";
+              document.body.appendChild(el);
+            }
+            el.textContent = String(msg || "Unknown error");
+          } catch (e) {}
+        }
+        window.addEventListener("error", function (e) {
+          show(e && (e.error && (e.error.stack || e.error.message)) || (e && e.message) || e);
+        });
+        window.addEventListener("unhandledrejection", function (e) {
+          show(e && e.reason && (e.reason.stack || e.reason.message) || (e && e.reason) || e);
+        });
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

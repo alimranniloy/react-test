@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Rubik:wght@400;500;700&family=Playfair+Display:wght@400;500;700&family=Merriweather:wght@400;700&family=Fira+Sans:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Bebas+Neue&family=Source+Serif+4:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-white text-slate-900;
+}
+
+.container-shell {
+  @apply mx-auto max-w-7xl px-4;
+}
+
+/* Canonical table UX baseline sourced from orders/OrderList.tsx */
+.data-table {
+  @apply w-full border-separate border-spacing-0 text-sm text-gray-700;
+}
+
+.data-table thead th {
+  @apply border-b border-gray-200 bg-gray-50 px-3 py-3.5 text-left text-sm font-semibold text-gray-900;
+}
+
+.data-table tbody td {
+  @apply border-b border-gray-200 px-3 py-2 align-middle text-sm text-gray-600;
+}
+
+.data-table tbody tr:hover {
+  @apply bg-slate-50;
+}
+
+.data-table tbody tr:last-child td {
+  @apply border-b-0;
+}
+
+.table-source-wrap {
+  @apply relative overflow-x-auto rounded-2xl border border-slate-200 bg-white;
+}
+
+.filepond--root {
+  @apply m-0;
+}
+
+.filepond--panel-root {
+  @apply rounded-xl border border-slate-200 bg-slate-50;
+}
+
+.filepond--drop-label {
+  @apply text-slate-600;
+}
