@@ -1,0 +1,49 @@
+
+create :
+
+
+{
+    "paymentID": "TR0011eZU56hG1714283198580",
+    "bkashURL": "https://sandbox.payment.bkash.com/?paymentId=TR0011eZU56hG1714283198580&hash=SVZF*WtFa07dGIeAQlNUgaTTJS3u(vo*E52*jE)8-KJUWC80Kflf8JOmw1Lg12U0p!465)QAbP0PO*_e((5qPYTWsP9cnsWcm1YL1714283198580&mode=0011&apiVersion=v1.2.0-beta",
+    "callbackURL": "https://bicc2024.oncologyclub.org/bkash/pay",
+    "successCallbackURL": "https://bicc2024.oncologyclub.org/bkash/pay?paymentID=TR0011eZU56hG1714283198580&status=success",
+    "failureCallbackURL": "https://bicc2024.oncologyclub.org/bkash/pay?paymentID=TR0011eZU56hG1714283198580&status=failure",
+    "cancelledCallbackURL": "https://bicc2024.oncologyclub.org/bkash/pay?paymentID=TR0011eZU56hG1714283198580&status=cancel",
+    "amount": "1",
+    "intent": "sale",
+    "currency": "BDT",
+    "paymentCreateTime": "2024-04-28T11:46:38:580 GMT+0600",
+    "transactionStatus": "Initiated",
+    "merchantInvoiceNumber": "Inv0124",
+    "statusCode": "0000",
+    "statusMessage": "Successful"
+}
+
+
+
+
+execute :
+
+
+{
+   "paymentID":"TR0011QbWEUfa1714285128637",
+   "trxID":"BDS00IHS84",
+   "transactionStatus":"Completed",
+   "amount":"5",
+   "currency":"BDT",
+   "intent":"sale",
+   "paymentExecuteTime":"2024-04-28T12:19:19:444 GMT+0600",
+   "merchantInvoiceNumber":"Inv_VlqxXQ",
+   "payerReference":"01677444438",
+   "customerMsisdn":"01619777283",
+   "statusCode":"0000",
+   "statusMessage":"Successful"
+}
+
+
+{
+   "username": "01907393893",
+   "password": ":*d13KzBI7F",
+   "app_key": "ssocCtnXkbA2H942WlBwtzpdtc",
+   "app_secret": "khFLOVTzbjgOue08nyDPRf7eAaR9q0qJWDF4i52Sw48XZbiw798F",
+}

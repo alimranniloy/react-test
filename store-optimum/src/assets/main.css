@@ -1,0 +1,361 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  font-family: "Sora", "Space Grotesk", Arial, sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  min-height: 100vh;
+  color: #e6f6ff;
+  background-color: #020f16;
+  background-image: radial-gradient(
+      circle at 20% 20%,
+      rgba(58, 255, 219, 0.08) 0,
+      transparent 45%
+    ),
+    radial-gradient(
+      circle at 80% 0%,
+      rgba(231, 193, 118, 0.12) 0,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 50% 80%,
+      rgba(80, 240, 190, 0.08) 0,
+      transparent 45%
+    ),
+    linear-gradient(145deg, #04141c 0%, #042828 40%, #03131e 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+      circle at 30% 20%,
+      rgba(4, 166, 168, 0.2),
+      transparent 55%
+    ),
+    radial-gradient(circle at 75% 10%, rgba(35, 210, 178, 0.18), transparent 45%);
+  pointer-events: none;
+}
+
+::selection {
+  background: rgba(46, 229, 194, 0.35);
+  color: #0b1f2b;
+}
+/* Global stylesheet */
+:root {
+  --header: #fff; /* Default background color */
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --glass-fill: rgba(255, 255, 255, 0.04);
+  --optimum-card: rgba(6, 32, 39, 0.9);
+  --optimum-card-alt: rgba(6, 32, 39, 0.75);
+}
+
+.glass-panel {
+  background: var(--optimum-card);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 25px 50px rgba(1, 12, 15, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+.gradient-text {
+  background: linear-gradient(120deg, #e9f4ff 0%, #6ef3c5 45%, #f3c98b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.optimum-grid {
+  background-image: radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.08) 1px,
+      transparent 0
+    ),
+    radial-gradient(
+      circle at 1px 1px,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 0
+    );
+  background-size: 80px 80px, 80px 80px;
+  background-position: 0 0, 40px 40px;
+  opacity: 0.35;
+}
+
+.optimum-spotlight {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    rgba(43, 209, 214, 0.18),
+    transparent 45%
+  );
+  filter: blur(60px);
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.optimum-divider {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
+  );
+  height: 1px;
+}
+
+.hero-sheen {
+  position: absolute;
+  inset: 2px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+}
+
+.noise-layer {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath fill='rgba(255,255,255,0.07)' d='M0 0h20v20H0zM20 20h20v20H20z'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.floating-card {
+  background: rgba(8, 34, 41, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  box-shadow: 0 35px 80px rgba(2, 13, 18, 0.6);
+  overflow: hidden;
+}
+
+.floating-card img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  filter: saturate(1.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.flicking-camera > * {
+  display: inherit !important;
+  white-space: normal;
+  vertical-align: top;
+}
+.flicking-viewport {
+  position: relative;
+  overflow: hidden;
+  max-height: 344px;
+}
+
+.flicking-camera {
+  width: 100%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  z-index: 1;
+}
+
+.flicking-camera > * {
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.flicking-viewport.vertical {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+
+.flicking-viewport.vertical > .flicking-camera {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.flicking-viewport.flicking-hidden .flicking-camera > * {
+  visibility: hidden;
+}
+.flicking-viewport:not(.vertical) {
+  height: inherit !important;
+  max-height: inherit !important;
+}
+.spinner {
+  margin: auto;
+}
+.codex-editor__redactor {
+  padding-bottom: 0px !important;
+}
+:root .countdown {
+  line-height: 1em;
+}
+
+.countdown {
+  display: inline-flex;
+}
+
+.countdown > * {
+  height: 1em;
+  display: inline-block;
+  overflow-y: hidden;
+}
+
+.countdown > *:before {
+  position: relative;
+  content: "00\a 01\a 02\a 03\a 04\a 05\a 06\a 07\a 08\a 09\a 10\a 11\a 12\a 13\a 14\a 15\a 16\a 17\a 18\a 19\a 20\a 21\a 22\a 23\a 24\a 25\a 26\a 27\a 28\a 29\a 30\a 31\a 32\a 33\a 34\a 35\a 36\a 37\a 38\a 39\a 40\a 41\a 42\a 43\a 44\a 45\a 46\a 47\a 48\a 49\a 50\a 51\a 52\a 53\a 54\a 55\a 56\a 57\a 58\a 59\a 60\a 61\a 62\a 63\a 64\a 65\a 66\a 67\a 68\a 69\a 70\a 71\a 72\a 73\a 74\a 75\a 76\a 77\a 78\a 79\a 80\a 81\a 82\a 83\a 84\a 85\a 86\a 87\a 88\a 89\a 90\a 91\a 92\a 93\a 94\a 95\a 96\a 97\a 98\a 99\a";
+  white-space: pre;
+  top: calc(var(--value) * -1em);
+  text-align: center;
+  transition: all 1s cubic-bezier(1, 0, 0, 1);
+}
+
+.ce-block__content {
+  max-width: inherit !important;
+}
+
+.firework {
+  position: absolute;
+}
+
+#firework-1 {
+  top: 5px;
+  left: 100px;
+  transform: scale(1.2);
+}
+
+#firework-2 {
+  top: 5px;
+  right: 100px;
+  transform: scale(1.2);
+}
+
+#firework-2 .explosion:before {
+  animation: explosion 2s 0.7s ease-in-out infinite;
+  background-color: yellow;
+}
+
+.explosion {
+  width: 4px;
+  height: 40px;
+  overflow: hidden;
+  position: absolute;
+  transform-origin: 50% 100%;
+}
+
+.explosion:before {
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 15px;
+  content: "";
+  position: absolute;
+  animation: explosion 2s ease-in-out infinite;
+  background-color: palevioletred;
+}
+
+.explosion:nth-child(1) {
+  transform: rotate(0deg) translateY(-15px);
+}
+
+.explosion:nth-child(2) {
+  transform: rotate(30deg) translateY(-15px);
+}
+
+.explosion:nth-child(3) {
+  transform: rotate(60deg) translateY(-15px);
+}
+
+.explosion:nth-child(4) {
+  transform: rotate(90deg) translateY(-15px);
+}
+
+.explosion:nth-child(5) {
+  transform: rotate(120deg) translateY(-15px);
+}
+
+.explosion:nth-child(6) {
+  transform: rotate(150deg) translateY(-15px);
+}
+
+.explosion:nth-child(7) {
+  transform: rotate(180deg) translateY(-15px);
+}
+
+.explosion:nth-child(8) {
+  transform: rotate(210deg) translateY(-15px);
+}
+
+.explosion:nth-child(9) {
+  transform: rotate(240deg) translateY(-15px);
+}
+
+.explosion:nth-child(10) {
+  transform: rotate(270deg) translateY(-15px);
+}
+
+.explosion:nth-child(11) {
+  transform: rotate(300deg) translateY(-15px);
+}
+
+.explosion:nth-child(12) {
+  transform: rotate(330deg) translateY(-15px);
+}
+
+@keyframes explosion {
+  0% {
+    top: 100%;
+  }
+  33%,
+  100% {
+    top: -50%;
+  }
+}
+
+/* In your src/assets/main.css or similar global stylesheet */
+
+@font-face {
+  font-family: "Bandeins Sans & Strange Variable";
+  /* Make sure you have this font file in your public folder or assets */
+  src: url("/BandeinsStrangeVariable.ttf");
+}
+
+/* @import url("https://fonts.googleapis.com/css2?family=Sora&display=swap");
+
+::-webkit-scrollbar {
+  display: none;
+}
+html,
+body {
+  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  @apply scroll-smooth;
+
+  scroll-behavior: smooth;
+} */

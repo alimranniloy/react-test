@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HTML Transformation</title>
+</head>
+<body>
+<button onclick="
+    transformHTML(originalHTML);">asdasdsa</button>
+<div id="originalHTML">
+    <div class="hidden md:flex justify-start">
+        <div class="relative">
+            <div class="absolute top-0 right-0 bottom-0 left-0 origin-right bg-[#101010] opacity-0 scale-x-100 group-[.c-active]:opacity-100 group-[.c-active]:scale-x-0 transition-all duration-[.3s] delay-[.2s] group-[.c-active]:delay-[.3s]"></div>
+            <div class="absolute top-0 right-0 bottom-0 left-0 origin-right bg-white opacity-0 scale-x-100 group-[.c-active]:opacity-100 group-[.c-active]:scale-x-0 transition-all duration-[.3s] delay-[.1s] group-[.c-active]:delay-[.4s]"></div>
+            <div class="origin-left opacity-0 scale-x-0 group-[.c-active]:opacity-100 group-[.c-active]:scale-x-100 transition-all duration-[.3s] delay-0 group-[.c-active]:delay-[.5s]">Design Agency</div>
+        </div>
+    </div>
+</div>
+
+<script>
+     const originalHTML = document.getElementById('originalHTML');
+    
+    function transformHTML(element) {
+        if (element.nodeType === Node.TEXT_NODE) {
+            const textValue = element.textContent.trim();
+            if (textValue.length > 0) {
+                const newTextElement = document.createElement('text');
+                newTextElement.setAttribute('value', `{${textValue}}`);
+                element.parentNode.replaceChild(newTextElement, element);
+            }
+        } else if (element.nodeType === Node.ELEMENT_NODE) {
+            if (element.hasAttribute('class')) {
+                const classes = element.getAttribute('class').split(' ').join(' ');
+                element.setAttribute('className', `{${classes}}`);
+                element.removeAttribute('class');
+            }
+            element.childNodes.forEach(childNode => {
+                transformHTML(childNode);
+            });
+        }
+    }
+    
+</script>
+
+</body>
+</html>
